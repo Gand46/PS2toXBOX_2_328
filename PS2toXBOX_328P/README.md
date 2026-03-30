@@ -45,6 +45,8 @@ Implementación para adaptar mandos PS1/PS2 a Original Xbox (XID) usando ATmega3
 - Señal `DAT` de PS2 (3.3V) a entrada AVR 5V: válida con margen lógico y GND común.
 - En V-USB, evita zeners USB de alta capacitancia en D+/D- porque pueden degradar la señal.
 
+- Validación de resistencias y protecciones del esquema de referencia: `RESISTENCIAS_Y_PROTECCIONES.md`.
+
 ## Toolchain y dependencias
 - `gcc-avr`
 - `avr-libc`

@@ -29,3 +29,5 @@ Aunque el sketch está organizado para Arduino IDE, esta implementación usa V-U
 - PS2 debe alimentarse a 3.3V.
 - CMD/ATT/CLK deben salir por level shifter 5V→3.3V.
 - Evita zeners USB de alta capacitancia en D+/D-.
+
+- Referencia de validación de resistencias: `../../PS2toXBOX_328P/RESISTENCIAS_Y_PROTECCIONES.md`.
