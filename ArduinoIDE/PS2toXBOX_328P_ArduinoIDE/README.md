@@ -25,3 +25,7 @@ Usar **level shifter 5V→3.3V** en señales de salida hacia PS2 (`CMD`, `ATT`, 
 
 ## Limitación práctica
 Aunque el sketch está organizado para Arduino IDE, esta implementación usa V-USB y timing sensible; para builds de producción se recomienda validar también con el flujo `Makefile` en `PS2toXBOX_328P/`.
+
+- PS2 debe alimentarse a 3.3V.
+- CMD/ATT/CLK deben salir por level shifter 5V→3.3V.
+- Evita zeners USB de alta capacitancia en D+/D-.

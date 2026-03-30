@@ -39,6 +39,12 @@ Implementación para adaptar mandos PS1/PS2 a Original Xbox (XID) usando ATmega3
 | `5V` | `VCC` | `5V` | Alimentación MCU |
 | `GND` | `GND` | `GND` | Tierra común |
 
+
+## Validación de coherencia eléctrica (auditado)
+- Configuración validada: **ATmega328P 5V/16MHz + PS2 a 3.3V + level shifter 5V→3.3V en CMD/ATT/CLK**.
+- Señal `DAT` de PS2 (3.3V) a entrada AVR 5V: válida con margen lógico y GND común.
+- En V-USB, evita zeners USB de alta capacitancia en D+/D- porque pueden degradar la señal.
+
 ## Toolchain y dependencias
 - `gcc-avr`
 - `avr-libc`
