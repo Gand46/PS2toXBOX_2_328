@@ -1,0 +1,2 @@
+   text	   data	    bss	    dec	    hex	filename
+      0	   3188	      0	   3188	    c74	main.hex

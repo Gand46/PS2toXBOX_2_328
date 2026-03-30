@@ -34,3 +34,6 @@ Libraries used:
 - [PsxNewLib](https://github.com/SukkoPera/PsxNewLib)
 - [DigitalIO](https://github.com/greiman/DigitalIO)
 - [OGXBOX-PAD](https://github.com/eolvera85/OGXBOX-PAD)
+
+## ATmega328P Implementation
+A dedicated ATmega328P + V-USB firmware implementation is now included in `PS2toXBOX_328P/`.
