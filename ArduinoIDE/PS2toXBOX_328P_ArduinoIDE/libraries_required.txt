@@ -1,0 +1,6 @@
+Arduino IDE dependencies
+- Arduino AVR Boards core
+- Built-in AVR toolchain (provided by Arduino IDE package manager)
+
+External Arduino libraries
+- None (V-USB and project sources are vendored in this folder)

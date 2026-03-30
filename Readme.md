@@ -34,3 +34,14 @@ Libraries used:
 - [PsxNewLib](https://github.com/SukkoPera/PsxNewLib)
 - [DigitalIO](https://github.com/greiman/DigitalIO)
 - [OGXBOX-PAD](https://github.com/eolvera85/OGXBOX-PAD)
+
+## ATmega328P Implementation
+A dedicated ATmega328P + V-USB firmware implementation is now included in `PS2toXBOX_328P/`.
+
+- ATmega328P 5V/16MHz + level shifter 5V→3.3V for PS2 signal outputs (CMD/ATT/CLK).
+
+- Arduino IDE project variant available at `ArduinoIDE/PS2toXBOX_328P_ArduinoIDE/` (ATmega328P 5V with level shifter on PS2 outputs).
+
+- Electrical/logic audit against dimitris-lagos reference is documented in `PS2toXBOX_328P/AUDITORIA_LOGICA_VOLTAJES.md`.
+
+- Resistor/protection validation for V-USB and PS2 lines: `PS2toXBOX_328P/RESISTENCIAS_Y_PROTECCIONES.md`.
