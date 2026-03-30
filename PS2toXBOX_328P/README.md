@@ -1,71 +1,66 @@
-# PS2toXBOX_328P (implementación propia)
+# PS2toXBOX_328P (ATmega328P + V-USB)
 
-Firmware para adaptar mandos PS1/PS2 a **Original Xbox** usando **ATmega328P @16MHz** + **V-USB**.
+Implementación para adaptar mandos PS1/PS2 a Original Xbox (XID) usando ATmega328P.
 
-## Objetivos de esta versión
-- Estructura de código más limpia y mantenible.
-- Bucle principal no bloqueante con watchdog activo.
-- Manejo de enumeración Xbox más robusto (timeouts acotados).
-- Traducción PS2→XID separada y con reporte neutral seguro ante fallos de lectura.
-- Soporte de rumble Xbox→PS2 (motores izquierdo/derecho).
+## Estado de compilación
+- **Versión de compilación:** ver `VERSION` y `build/build_version.txt`.
+- **Artefacto principal:** `build/PS2toXBOX_328P.hex`.
+- **Artefacto versionado:** `build/PS2toXBOX_328P_<VERSION>.hex`.
 
-## Estructura
-- `src/main.c`: USB/XID, enumeración y loop principal.
-- `src/ps2.c`: SPI/PS2 + traducción de entradas.
-- `src/descriptors.c`: descriptores USB/XID.
-- `include/*.h`: estructuras y contratos públicos.
-- `usbdrv/*`: stack V-USB requerido por ATmega328P.
+## Arquitectura del firmware
+- `src/main.c`: manejo USB/XID (`usbFunctionSetup`, `usbFunctionWrite`), temporizador 10ms para ventana de enumeración y bucle principal no bloqueante.
+- `src/ps2.c`: interfaz SPI con mando PS2, lectura de estados, traducción de botones/ejes y configuración de rumble.
+- `src/descriptors.c`: descriptors USB/XID requeridos por OG Xbox.
+- `include/*.h`: estructuras de reportes y mapping.
+- `usbdrv/*`: stack V-USB (control endpoint + endpoint de interrupción para reportes XID).
 
-## Hardware (ATmega328P)
-- D+ USB → PD2 (INT0)
-- D- USB → PD4
-- PS2 ATT/CS → PB2
-- PS2 CMD/MOSI → PB3
-- PS2 DAT/MISO → PB4
-- PS2 CLK/SCK → PB5
-
-> Importante: respetar niveles eléctricos del mando PS2 (3.3V en señales del control) usando conversión de nivel cuando corresponda.
-
-## Build (AVR-GCC)
-Este proyecto conserva `Makefile` para compilar/flashear con toolchain AVR.
-
-Ejemplo:
-```bash
-make
-make flash
-```
-
-## Notas técnicas
-- Se mantiene endpoint de entrada de 20 bytes para reporte XID (compatibilidad OG Xbox).
-- En ausencia de lectura válida del control, se envía reporte neutral (evita bloqueos/reinicios forzados).
-
-
-## Referencia de hardware usada en este proyecto
+## Referencia de hardware usada
 - MCU objetivo: **ATmega328P versión 5V / 16MHz**.
-- Interfaz PS2: se usa **level shifter 5V→3.3V** para las señales que salen del 328P hacia el control PS2 (`CMD`, `ATT`, `CLK`).
-- Señal `DAT` (PS2→MCU) debe leerse dentro de nivel seguro para el ATmega328P y compartir tierra común.
+- Se usa **level shifter 5V→3.3V** en señales de salida del MCU hacia PS2: `CMD`, `ATT`, `CLK`.
+- `DAT` (PS2→MCU) debe entrar a nivel seguro y con tierra común.
 
 ## Pinout detallado
 
-### Señales PS2 hacia ATmega328P
-| Señal PS2 | Pin ATmega328P | Pin Arduino UNO/Nano | Dirección | Nota |
+### PS2 ↔ ATmega328P
+| Señal PS2 | Pin AVR | Pin Arduino UNO/Nano | Dirección | Observación |
 |---|---:|---:|---|---|
-| `DAT` | `PB4` | `D12 (MISO)` | PS2 → MCU | Datos del mando |
-| `CMD` | `PB3` | `D11 (MOSI)` | MCU → PS2 | Comandos al mando |
-| `ATT` | `PB2` | `D10 (SS)` | MCU → PS2 | Chip select (activo en bajo) |
-| `CLK` | `PB5` | `D13 (SCK)` | MCU → PS2 | Reloj SPI (~500kHz) |
-| `VCC` | `3.3V` | `3V3` | — | Alimentación mando PS2 |
+| `DAT` | `PB4` | `D12/MISO` | PS2 → MCU | Lectura de datos del mando |
+| `CMD` | `PB3` | `D11/MOSI` | MCU → PS2 | Requiere level shifter |
+| `ATT` | `PB2` | `D10/SS` | MCU → PS2 | Requiere level shifter |
+| `CLK` | `PB5` | `D13/SCK` | MCU → PS2 | Requiere level shifter |
+| `VCC` | `3.3V` | `3V3` | — | Alimentación lógica PS2 |
 | `GND` | `GND` | `GND` | — | Tierra común |
 
-### Señales USB/Xbox en V-USB
-| Señal USB | Pin ATmega328P | Pin Arduino UNO/Nano | Nota |
+### USB (Xbox cable) ↔ ATmega328P (V-USB)
+| Señal USB | Pin AVR | Pin Arduino UNO/Nano | Observación |
 |---|---:|---:|---|
-| `D+` | `PD2` | `D2 / INT0` | Línea obligatoria de interrupción para V-USB |
-| `D-` | `PD4` | `D4` | Línea de datos USB low-speed |
-| `VBUS 5V` | `VCC` | `5V` | Alimentación del microcontrolador |
-| `GND` | `GND` | `GND` | Tierra común con consola |
+| `D+` | `PD2` | `D2/INT0` | Línea de interrupción obligatoria |
+| `D-` | `PD4` | `D4` | Línea de datos LS |
+| `5V` | `VCC` | `5V` | Alimentación MCU |
+| `GND` | `GND` | `GND` | Tierra común |
 
-### Recomendaciones eléctricas
-- Usa adaptación de nivel para señales del mando PS2 si tu placa está a 5V.
-- Mantén cableado corto en `D+`/`D-` y en líneas SPI del PS2.
-- Comparte siempre `GND` entre Xbox, MCU y mando PS2.
+## Toolchain y dependencias
+- `gcc-avr`
+- `avr-libc`
+- `binutils-avr`
+- `avrdude` (para flasheo)
+
+## Compilación
+```bash
+make clean
+make hex
+make artifact
+```
+
+El target `artifact` genera:
+- `build/PS2toXBOX_328P.hex`
+- `build/PS2toXBOX_328P_<VERSION>.hex`
+- `build/build_version.txt`
+- `build/build_size.txt`
+- `build/build_timestamp_utc.txt`
+
+## Flasheo
+Editar `AVRDUDE` en `Makefile` según tu programador y luego ejecutar:
+```bash
+make flash
+```

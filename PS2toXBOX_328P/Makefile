@@ -17,6 +17,7 @@ OBJECTS_S = src/main.o src/descriptors.o src/ps2.o
 OBJECTS = usbdrv/usbdrv.o usbdrv/usbdrvasm.o usbdrv/oddebug.o $(OBJECTS_S)
 
 COMPILE = avr-gcc -Wall -Os -DF_CPU=$(F_CPU) $(CFLAGS) -mmcu=$(DEVICE)
+VERSION := $(shell cat VERSION 2>/dev/null || echo 0.0.0-dev)
 
 
 ##############################################################################
@@ -107,7 +108,7 @@ help:
 	@echo "make fuse ...... to flash the fuses"
 	@echo "make flash ..... to flash the firmware (use this on metaboard)"
 	@echo "make clean ..... to delete objects and hex file"
-	@echo "make artifact .. to build and copy hex into build/"
+	@echo "make artifact .. build and copy versioned hex into build/"
 
 hex: main.hex
 
@@ -116,7 +117,9 @@ program: flash fuse
 
 artifact: main.hex
 	mkdir -p build
+	cp main.hex build/PS2toXBOX_328P_$(VERSION).hex
 	cp main.hex build/PS2toXBOX_328P.hex
+	echo $(VERSION) > build/build_version.txt
 	avr-size main.hex > build/build_size.txt
 	date -u +"%Y-%m-%dT%H:%M:%SZ" > build/build_timestamp_utc.txt
 
