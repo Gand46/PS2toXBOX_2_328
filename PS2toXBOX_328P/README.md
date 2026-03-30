@@ -39,6 +39,12 @@ make flash
 - Se mantiene endpoint de entrada de 20 bytes para reporte XID (compatibilidad OG Xbox).
 - En ausencia de lectura válida del control, se envía reporte neutral (evita bloqueos/reinicios forzados).
 
+
+## Referencia de hardware usada en este proyecto
+- MCU objetivo: **ATmega328P versión 5V / 16MHz**.
+- Interfaz PS2: se usa **level shifter 5V→3.3V** para las señales que salen del 328P hacia el control PS2 (`CMD`, `ATT`, `CLK`).
+- Señal `DAT` (PS2→MCU) debe leerse dentro de nivel seguro para el ATmega328P y compartir tierra común.
+
 ## Pinout detallado
 
 ### Señales PS2 hacia ATmega328P

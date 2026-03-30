@@ -37,3 +37,5 @@ Libraries used:
 
 ## ATmega328P Implementation
 A dedicated ATmega328P + V-USB firmware implementation is now included in `PS2toXBOX_328P/`.
+
+- ATmega328P 5V/16MHz + level shifter 5V→3.3V for PS2 signal outputs (CMD/ATT/CLK).
